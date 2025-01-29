@@ -1,0 +1,52 @@
+[
+  {
+    "courseName": "Introduction to Programming",
+    "students": [
+      {
+        "studentId": 1,
+        "name": "Alice",
+        "grades": {
+          "Math": 90.0,
+          "Science": 95.0
+        }
+      },
+      {
+        "studentId": 2,
+        "name": "Bob",
+        "grades": {
+          "Math": 80.0,
+          "Science": 85.0
+        }
+      },
+      {
+        "studentId": 3,
+        "name": "Charlie",
+        "grades": {
+          "Math": 70.0,
+          "Science": 75.0
+        }
+      }
+    ]
+  },
+  {
+    "courseName": "Data Structures",
+    "students": [
+      {
+        "studentId": 4,
+        "name": "David",
+        "grades": {
+          "Arrays": 85.0,
+          "LinkedLists": 90.0
+        }
+      },
+      {
+        "studentId": 5,
+        "name": "Eve",
+        "grades": {
+          "Trees": 78.0,
+          "Graphs": 82.0
+        }
+      }
+    ]
+  }
+]

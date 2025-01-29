@@ -1,4 +1,7 @@
 package model.exceptions;
 
-public class DuplicateStudentException {
+public class DuplicateStudentException extends Exception {
+    public DuplicateStudentException(String message) {
+        super(message);
+    }
 }

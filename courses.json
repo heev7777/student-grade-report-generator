@@ -1,0 +1,31 @@
+[ {
+  "courseName" : "Introduction to Programming",
+  "students" : [ {
+    "studentId" : 1,
+    "name" : "Alice",
+    "grades" : {
+      "Science" : 95.0,
+      "Math" : 90.0
+    },
+    "letterGrade" : "A"
+  }, {
+    "studentId" : 2,
+    "name" : "Bob",
+    "grades" : {
+      "Science" : 85.0,
+      "Math" : 80.0
+    },
+    "letterGrade" : "B"
+  }, {
+    "studentId" : 3,
+    "name" : "Charlie",
+    "grades" : {
+      "Science" : 75.0,
+      "Math" : 70.0
+    },
+    "letterGrade" : "C"
+  } ],
+  "averageGrade" : 82.5,
+  "highestGrade" : 92.5,
+  "lowestGrade" : 72.5
+} ]
