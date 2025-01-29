@@ -1,2 +1,2 @@
 # student-grade-report-generator
-Student Grade Report Generator
+model.Student Grade Report Generator
