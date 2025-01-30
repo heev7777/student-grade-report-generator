@@ -20,6 +20,7 @@ public class JSONDataStore implements DataStore {
     public void saveCourses(List<Course> courses, String filename) throws IOException {
         try (FileWriter writer = new FileWriter(filename)) {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, courses);
+            System.out.println("Saving JSON: " + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(courses));
         }
     }
 
@@ -28,6 +29,8 @@ public class JSONDataStore implements DataStore {
         try (FileReader reader = new FileReader(filename)) {
             return objectMapper.readValue(reader, new TypeReference<List<Course>>() {});
         } catch (Exception e) {
+            System.err.println("Error loading courses: " + e.getMessage());
+            e.printStackTrace();
             throw new IOException("Error loading courses from JSON: " + e.getMessage());
         }
     }

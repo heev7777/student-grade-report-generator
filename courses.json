@@ -24,8 +24,35 @@
       "Math" : 70.0
     },
     "letterGrade" : "C"
+  }, {
+    "studentId" : 12,
+    "name" : "emre2",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
+  }, {
+    "studentId" : 13,
+    "name" : "random",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
   } ],
-  "averageGrade" : 82.5,
+  "averageGrade" : 49.5,
   "highestGrade" : 92.5,
-  "lowestGrade" : 72.5
+  "lowestGrade" : 0.0
+}, {
+  "courseName" : "Random course",
+  "students" : [ {
+    "studentId" : 33,
+    "name" : "emre_randomcourse",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
+  } ],
+  "averageGrade" : 0.0,
+  "highestGrade" : 0.0,
+  "lowestGrade" : 0.0
 } ]

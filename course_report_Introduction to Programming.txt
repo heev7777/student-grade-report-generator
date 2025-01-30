@@ -1,0 +1,11 @@
+Course Report:
+Course Name: Introduction to Programming
+Students:
+	ID: 1, Name: Alice
+	ID: 2, Name: Bob
+	ID: 3, Name: Charlie
+	ID: 12, Name: emre2
+	ID: 13, Name: random
+Average Grade: 49.5
+Highest Grade: 92.5
+Lowest Grade: 0.0

@@ -1,11 +1,12 @@
 import model.Course;
 import model.Student;
 import model.exceptions.DuplicateStudentException;
+import model.exceptions.InvalidGradeException;
+import model.exceptions.StudentNotFoundException;
 import persistence.DataStore;
 import persistence.JSONDataStore;
 import reports.FileReportGenerator;
 import reports.GradeReportGenerator;
-import reports.TextReportGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,15 +14,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidGradeException {
         DataStore jsonDataStore = new JSONDataStore();
-        GradeReportGenerator textReportGenerator = new TextReportGenerator();
+//        GradeReportGenerator textReportGenerator = new TextReportGenerator();
         GradeReportGenerator fileReportGenerator = new FileReportGenerator();
 
-        List<Course> courses = new ArrayList<>();
-        Course course1 = new Course("Introduction to Programming");
-        courses.add(course1);
-
+        List<Course> courses = loadCoursesFromJson(jsonDataStore);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -30,7 +28,11 @@ public class Main {
             System.out.println("3. View All Students");
             System.out.println("4. Save Courses to JSON");
             System.out.println("5. Load Courses from JSON");
-            System.out.println("6. Exit");
+            System.out.println("6. Delete Student");
+            System.out.println("7. List Grades for Every Student");
+            System.out.println("8. Generate Report to Text File");
+            System.out.println("9. Create New Course");
+            System.out.println("10. Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -40,13 +42,13 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    addStudent(course1, scanner, jsonDataStore, courses);
+                    addStudent(scanner, jsonDataStore, courses);
                     break;
                 case "2":
-                    editStudentGrade(course1, scanner);
+                    editStudentGrade(scanner, courses);
                     break;
                 case "3":
-                    viewAllStudents(jsonDataStore, courses);
+                    viewAllStudents(courses);
                     break;
                 case "4":
                     saveCoursesToJson(jsonDataStore, courses);
@@ -55,6 +57,18 @@ public class Main {
                     courses = loadCoursesFromJson(jsonDataStore);
                     break;
                 case "6":
+                    deleteStudent(scanner, jsonDataStore, courses);
+                    break;
+                case "7":
+                    listGradesForEveryStudent(courses);
+                    break;
+                case "8":
+                    generateReportToFile(courses, fileReportGenerator);
+                    break;
+                case "9":
+                    createNewCourse(scanner, jsonDataStore, courses);
+                    break;
+                case "10":
                     System.exit(0);
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -62,7 +76,37 @@ public class Main {
         }
     }
 
-    private static void addStudent(Course course, Scanner scanner, DataStore jsonDataStore, List<Course> courses) {
+    private static void createNewCourse(Scanner scanner, DataStore jsonDataStore, List<Course> courses) {
+        System.out.print("Enter course name: ");
+        String courseName = scanner.nextLine();
+        if (courseName.equalsIgnoreCase("exit")) {
+            System.exit(0);
+        }
+
+        Course newCourse = new Course(courseName);
+        courses.add(newCourse);
+        System.out.println("Course created successfully.");
+
+        saveCoursesToJson(jsonDataStore, courses);
+    }
+
+    private static void addStudent(Scanner scanner, DataStore jsonDataStore, List<Course> courses) throws InvalidGradeException {
+        System.out.print("Enter course name: ");
+        String courseName = scanner.nextLine();
+        if (courseName.equalsIgnoreCase("exit")) {
+            System.exit(0);
+        }
+
+        Course course = courses.stream()
+                .filter(c -> c.getCourseName().equals(courseName))
+                .findFirst()
+                .orElse(null);
+
+        if (course == null) {
+            System.out.println("Course not found.");
+            return;
+        }
+
         System.out.print("Enter student ID: ");
         String input = scanner.nextLine();
         if (input.equalsIgnoreCase("exit")) {
@@ -77,16 +121,34 @@ public class Main {
         }
 
         Student student = new Student(studentId, name);
+        student.addGrade("Default Assignment", 0.0);
+
         try {
             course.addStudent(student);
             System.out.println("Student added successfully.");
-            saveCoursesToJson(jsonDataStore, courses); // Save courses to JSON after adding a student
+            saveCoursesToJson(jsonDataStore, courses);
         } catch (DuplicateStudentException e) {
             System.err.println("Error adding student: " + e.getMessage());
         }
     }
 
-    private static void editStudentGrade(Course course, Scanner scanner) {
+    private static void editStudentGrade(Scanner scanner, List<Course> courses) {
+        System.out.print("Enter course name: ");
+        String courseName = scanner.nextLine();
+        if (courseName.equalsIgnoreCase("exit")) {
+            System.exit(0);
+        }
+
+        Course course = courses.stream()
+                .filter(c -> c.getCourseName().equals(courseName))
+                .findFirst()
+                .orElse(null);
+
+        if (course == null) {
+            System.out.println("Course not found.");
+            return;
+        }
+
         System.out.print("Enter student ID: ");
         String input = scanner.nextLine();
         if (input.equalsIgnoreCase("exit")) {
@@ -96,35 +158,100 @@ public class Main {
 
         try {
             Student student = course.getStudent(studentId);
+
             System.out.print("Enter assignment name: ");
             String assignmentName = scanner.nextLine();
             if (assignmentName.equalsIgnoreCase("exit")) {
                 System.exit(0);
             }
 
-            System.out.print("Enter new grade: ");
-            input = scanner.nextLine();
-            if (input.equalsIgnoreCase("exit")) {
-                System.exit(0);
+            if (!student.getGrades().containsKey(assignmentName)) {
+                System.out.print("Assignment not found. Do you want to add it? (yes/no): ");
+                String response = scanner.nextLine();
+                if (response.equalsIgnoreCase("yes")) {
+                    System.out.print("Enter grade: ");
+                    double grade = Double.parseDouble(scanner.nextLine());
+                    student.addGrade(assignmentName, grade);
+                    System.out.println("Assignment added and grade set successfully.");
+                } else {
+                    System.out.println("Operation cancelled.");
+                }
+            } else {
+                System.out.print("Enter new grade: ");
+                double grade = Double.parseDouble(scanner.nextLine());
+                student.editGrade(assignmentName, grade);
+                System.out.println("Grade updated successfully.");
             }
-            double grade = Double.parseDouble(input);
 
-            student.editGrade(assignmentName, grade);
-            System.out.println("Grade updated successfully.");
         } catch (Exception e) {
             System.err.println("Error editing grade: " + e.getMessage());
         }
     }
 
-    private static void viewAllStudents(DataStore jsonDataStore, List<Course> courses) {
-        courses = loadCoursesFromJson(jsonDataStore);
+    private static void viewAllStudents(List<Course> courses) {
         for (Course course : courses) {
-            System.out.println("Students in " + course.getCourseName() + ":");
-            for (Student student : course.getStudents()) {
-                System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getName());
+            System.out.println("\nStudents in " + course.getCourseName() + ":");
+            List<Student> students = course.getStudents();
+
+            if (students.isEmpty()) {
+                System.out.println("No students enrolled.");
+            } else {
+                for (Student student : students) {
+                    System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getName());
+                }
             }
         }
     }
+
+    private static void deleteStudent(Scanner scanner, DataStore jsonDataStore, List<Course> courses) {
+        System.out.print("Enter course name: ");
+        String courseName = scanner.nextLine();
+        if (courseName.equalsIgnoreCase("exit")) {
+            System.exit(0);
+        }
+
+        Course course = courses.stream()
+                .filter(c -> c.getCourseName().equals(courseName))
+                .findFirst()
+                .orElse(null);
+
+        if (course == null) {
+            System.out.println("Course not found.");
+            return;
+        }
+
+        System.out.print("Enter student ID to delete: ");
+        String input = scanner.nextLine();
+        if (input.equalsIgnoreCase("exit")) {
+            System.exit(0);
+        }
+        int studentId = Integer.parseInt(input);
+
+        try {
+            course.removeStudent(studentId);
+            System.out.println("Student removed successfully.");
+            saveCoursesToJson(jsonDataStore, courses);
+        } catch (StudentNotFoundException e) {
+            System.err.println("Error removing student: " + e.getMessage());
+        }
+    }
+
+    private static void listGradesForEveryStudent(List<Course> courses) {
+        for (Course course : courses) {
+            System.out.println("Grades for every student in " + course.getCourseName() + ":");
+            for (Student student : course.getStudents()) {
+                System.out.println("ID: " + student.getStudentId() + ", Name: " + student.getName() + ", Grades: " + student.getGrades());
+            }
+        }
+    }
+
+    private static void generateReportToFile(List<Course> courses, GradeReportGenerator fileReportGenerator) {
+        for (Course course : courses) {
+            fileReportGenerator.generateReport(course);
+            System.out.println("Report generated to file for course: " + course.getCourseName());
+        }
+    }
+
     private static void saveCoursesToJson(DataStore jsonDataStore, List<Course> courses) {
         try {
             jsonDataStore.saveCourses(courses, "courses.json");
@@ -136,9 +263,9 @@ public class Main {
 
     private static List<Course> loadCoursesFromJson(DataStore jsonDataStore) {
         try {
-            List<Course> courses = jsonDataStore.loadCourses("courses.json");
+            List<Course> loadedCourses = jsonDataStore.loadCourses("courses.json");
             System.out.println("Courses loaded from courses.json");
-            return courses;
+            return loadedCourses;
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error loading courses from JSON: " + e.getMessage());
             return new ArrayList<>();
