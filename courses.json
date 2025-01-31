@@ -1,0 +1,66 @@
+[ {
+  "courseName" : "Introduction to Programming",
+  "students" : [ {
+    "studentId" : 1,
+    "name" : "Alice",
+    "grades" : {
+      "Science" : 95.0,
+      "Math" : 90.0
+    },
+    "letterGrade" : "A"
+  }, {
+    "studentId" : 2,
+    "name" : "Bob",
+    "grades" : {
+      "Science" : 85.0,
+      "Math" : 80.0
+    },
+    "letterGrade" : "B"
+  }, {
+    "studentId" : 3,
+    "name" : "Charlie",
+    "grades" : {
+      "Science" : 75.0,
+      "Math" : 70.0
+    },
+    "letterGrade" : "C"
+  }, {
+    "studentId" : 12,
+    "name" : "emre2",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
+  }, {
+    "studentId" : 13,
+    "name" : "random",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
+  }, {
+    "studentId" : 155,
+    "name" : "emre2",
+    "grades" : {
+      "Default Assignment" : 0.0,
+      "math" : 77.0
+    },
+    "letterGrade" : "F"
+  } ],
+  "averageGrade" : 47.666666666666664,
+  "highestGrade" : 92.5,
+  "lowestGrade" : 0.0
+}, {
+  "courseName" : "Random course",
+  "students" : [ {
+    "studentId" : 33,
+    "name" : "emre_randomcourse",
+    "grades" : {
+      "Default Assignment" : 0.0
+    },
+    "letterGrade" : "F"
+  } ],
+  "averageGrade" : 0.0,
+  "highestGrade" : 0.0,
+  "lowestGrade" : 0.0
+} ]

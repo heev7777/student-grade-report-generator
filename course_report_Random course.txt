@@ -1,0 +1,7 @@
+Course Report:
+Course Name: Random course
+Students:
+	ID: 33, Name: emre_randomcourse
+Average Grade: 0.0
+Highest Grade: 0.0
+Lowest Grade: 0.0
