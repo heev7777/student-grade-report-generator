@@ -38,8 +38,16 @@
       "Default Assignment" : 0.0
     },
     "letterGrade" : "F"
+  }, {
+    "studentId" : 155,
+    "name" : "emre2",
+    "grades" : {
+      "Default Assignment" : 0.0,
+      "math" : 77.0
+    },
+    "letterGrade" : "F"
   } ],
-  "averageGrade" : 49.5,
+  "averageGrade" : 47.666666666666664,
   "highestGrade" : 92.5,
   "lowestGrade" : 0.0
 }, {
